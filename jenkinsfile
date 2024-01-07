@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+    tools{
+        maven "mvn"
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                // Get some code from a GitHub repository
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'GitHub', url: 'https://github.com/Fouzia-Begum/Java-web-calci.git']])
+
+                // Build using Maven
+                sh "mvn clean package"
+            }
+        }   
+       stage('Build Docker Image') {
+            steps {
+                script{
+                    sh "docker build -t jenkins-calci ."
+                }
+
+            }
+            
+        }
+        stage('Push Image to DockerHub') {
+            steps {
+                script{
+                    withCredentials([string(credentialsId: 'dockerhub', variable: 'docker')]) {
+                    sh "docker login -u fouziabegum -p ${docker}"
+                    sh "docker tag jenkins-calci fouziabegum/java-calci"
+                    sh "docker push fouziabegum/java-calci"
+                }
+
+
+            }
+            }
+        }
+    }
+}
