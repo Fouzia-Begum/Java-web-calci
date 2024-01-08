@@ -26,10 +26,10 @@ pipeline {
         stage('Push Image to DockerHub') {
             steps {
                 script{
-                    withCredentials([string(credentialsId: 'dockerhub', variable: 'docker')]) {
-                    sh "docker login -u fouziabegum -p ${docker}"
-                    sh "docker tag jenkins-calci fouziabegum/java-calci"
-                    sh "docker push fouziabegum/java-calci"
+                    withCredentials([string(credentialsId: 'dockerhub', variable: 'dockerhub')]) {
+                    sh "docker login -u fouziabegum -p ${dockerhub}"
+                    sh "docker tag jenkins-calci fouziabegum/java-calci-new"
+                    sh "docker push fouziabegum/java-calci-new"
                 }
 
 
